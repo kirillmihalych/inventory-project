@@ -13,6 +13,12 @@
             itemKey="id"
             tag="ul"
             class="items-container"
+            :move="
+              setToLocalStorage(
+                'inventory',
+                JSON.stringify(inventory.inventory)
+              )
+            "
           >
             <template #item="{ element: item }">
               <div class="item" @click="selectItem(item)">
@@ -88,6 +94,7 @@
 import { useInventory, type IItem } from '@/stores/inventory'
 import { ref } from 'vue'
 import draggable from 'vuedraggable'
+import setToLocalStorage from '@/utils/setToLocalStorage'
 
 const inventory = useInventory()
 

@@ -1,5 +1,7 @@
-import { ref, computed, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { defineStore } from 'pinia'
+import getFromLocalStorage from '@/utils/getFromLocalStorage'
+import { INVENTORY_KEY } from '@/utils/keys'
 
 export interface IItem {
   id: string
@@ -9,6 +11,8 @@ export interface IItem {
 }
 
 export const useInventory = defineStore('inventory', () => {
+  console.log(getFromLocalStorage(INVENTORY_KEY))
+
   const inventory = ref<IItem[]>([
     { id: '1', title: 'Shield', desc: 'a strong wooden shield', amount: 5 },
     { id: '2', title: 'Sword', desc: 'a strong iron sword', amount: 3 },
@@ -45,6 +49,14 @@ export const useInventory = defineStore('inventory', () => {
       inventory.value = inventory.value?.filter((item: IItem) => item.id !== id)
     }
   }
+
+  onBeforeMount(() => {
+    if (getFromLocalStorage(INVENTORY_KEY) !== undefined) {
+      console.log('it works')
+      inventory.value = getFromLocalStorage(INVENTORY_KEY)
+      console.log(getFromLocalStorage(INVENTORY_KEY))
+    }
+  })
 
   return { inventory, removeItem }
 })
