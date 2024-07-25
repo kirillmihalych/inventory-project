@@ -3,9 +3,9 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header class="base">hello there</header>
-
-  <RouterView />
+  <div class="app-wrapper">
+    <RouterView />
+  </div>
 </template>
 
 <style lang="scss">
