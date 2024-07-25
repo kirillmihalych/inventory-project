@@ -1,6 +1,8 @@
 const setToLocalStorage = (key: string, value: string) => {
-  console.log('hi local')
+  console.log('works')
   localStorage.setItem(key, value)
+
+  return undefined
 }
 
 export default setToLocalStorage

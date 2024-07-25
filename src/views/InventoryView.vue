@@ -61,7 +61,7 @@
                     @click="
                       inventory.removeItem(
                         selectedItem?.id as string,
-                        selectedAmount
+                        selectedAmount as number
                       )
                     "
                     class="btn-confirm"
@@ -108,6 +108,10 @@ const exitRemovalMode = () => (isRemovalMode.value = false)
 const closeModal = () => (selectedItem.value = null)
 
 const selectItem = (item: IItem) => (selectedItem.value = item)
+
+const handleMove = () => {
+  return setToLocalStorage('inventory', JSON.stringify(inventory.inventory))
+}
 </script>
 
 <style lang="scss"></style>
