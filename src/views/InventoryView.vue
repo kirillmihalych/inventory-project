@@ -3,11 +3,7 @@
     <div>
       <div class="grid-wrapper">
         <div class="item-info-wrapper">
-          <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkzAYAAABhAGN1a4IAAAAASUVORK5CYII="
-            alt="Mock Image"
-            class="item-image"
-          />
+          <div class="item-image"></div>
           <h2>Item name</h2>
           <p>Here are some text bla-bla-bla</p>
         </div>
@@ -19,7 +15,7 @@
             class="items-container"
           >
             <template #item="{ element: item }">
-              <div class="item">
+              <div class="item" @click="selectItem(item)">
                 <li>{{ item.title }}</li>
                 <span class="item-amount" v-if="item.amount !== null">{{
                   item.amount
@@ -27,6 +23,52 @@
               </div>
             </template>
           </draggable>
+          <div
+            class="item-desc"
+            v-show="selectedItem"
+            @blur="selectedItem = null"
+          >
+            <div class="item-desc-img"></div>
+            <div>
+              <h2>{{ selectedItem?.title }}</h2>
+              <p>{{ selectedItem?.desc }}</p>
+            </div>
+            <div>
+              <button
+                class="delete-btn"
+                @click="enterRemovalMode"
+                v-if="!isRemovalMode"
+              >
+                Удалить предмет
+              </button>
+              <div v-if="isRemovalMode" class="modal-remove-container">
+                <input
+                  type="text"
+                  v-model="selectedAmount"
+                  placeholder="Введите количество"
+                />
+                <div class="btns-container">
+                  <button @click="exitRemovalMode" class="btn-cancel">
+                    Отмена
+                  </button>
+                  <button
+                    @click="
+                      inventory.removeItem(
+                        selectedItem?.id as string,
+                        selectedAmount
+                      )
+                    "
+                    class="btn-confirm"
+                  >
+                    Подтвердить
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button @click="closeModal" class="close-modal-btn">x</button>
+            </div>
+          </div>
         </div>
       </div>
       <footer class="inventory-footer">
@@ -43,10 +85,22 @@
 </template>
 
 <script setup lang="ts">
-import { useInventory } from '@/stores/inventory'
+import { useInventory, type IItem } from '@/stores/inventory'
+import { ref } from 'vue'
 import draggable from 'vuedraggable'
 
 const inventory = useInventory()
+
+const selectedItem = ref<IItem | null>(null)
+const selectedAmount = ref<number | null>(null)
+
+const isRemovalMode = ref(false)
+const enterRemovalMode = () => (isRemovalMode.value = true)
+const exitRemovalMode = () => (isRemovalMode.value = false)
+
+const closeModal = () => (selectedItem.value = null)
+
+const selectItem = (item: IItem) => (selectedItem.value = item)
 </script>
 
 <style lang="scss"></style>

@@ -1,18 +1,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { defineStore } from 'pinia'
 
-interface IItem {
+export interface IItem {
   id: string
   title: string
   amount: number | null
+  desc?: string
 }
 
-export const useInventory = defineStore('counter', () => {
-  const inventory = ref<IItem[] | null>([
-    { id: '1', title: 'Shield', amount: 5 },
-    { id: '2', title: 'Sword', amount: 3 },
-    { id: '3', title: 'Bow', amount: 1 },
-    { id: '4', title: 'Potion', amount: 2 },
+export const useInventory = defineStore('inventory', () => {
+  const inventory = ref<IItem[]>([
+    { id: '1', title: 'Shield', desc: 'a strong wooden shield', amount: 5 },
+    { id: '2', title: 'Sword', desc: 'a strong iron sword', amount: 3 },
+    { id: '3', title: '', amount: null },
+    { id: '4', title: '', amount: null },
     { id: '5', title: '', amount: null },
     { id: '6', title: '', amount: null },
     { id: '7', title: '', amount: null },
@@ -36,24 +37,14 @@ export const useInventory = defineStore('counter', () => {
     { id: '25', title: '', amount: null },
   ])
 
-  // const fillEmptySlots = () => {
-  //   let id = 26
+  const removeItem = (id: string, amount: number) => {
+    const item = inventory.value?.find((item: IItem) => item.id === id)
+    if ((item?.amount as number) > amount && item) {
+      item.amount = (item.amount as number) - amount
+    } else {
+      inventory.value = inventory.value?.filter((item: IItem) => item.id !== id)
+    }
+  }
 
-  //   while (inventory.value && inventory.value.length < 25) {
-  //     inventory.value?.push({
-  //       id: id.toString(),
-  //       title: '',
-  //       amount: null,
-  //     })
-
-  //     id += 1
-  //   }
-  // }
-
-  // onMounted(() => {
-  //   console.log('it fills')
-  //   fillEmptySlots()
-  // })
-
-  return { inventory }
+  return { inventory, removeItem }
 })
